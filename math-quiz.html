@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics Quiz</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .player-section { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        .correct { color: green; }
+        .incorrect { color: red; }
+    </style>
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3">
+        <h1>Mathematics Quiz</h1>
+    </header>
+
+    <div class="container my-4">
+        <!-- Setup Section -->
+        <div id="setup" class="text-center">
+            <h2>Setup</h2>
+            <div class="mb-3">
+                <label for="player1" class="form-label">Player 1 Name:</label>
+                <input type="text" id="player1" class="form-control" placeholder="Enter name">
+            </div>
+            <div class="mb-3">
+                <label for="player2" class="form-label">Player 2 Name (optional):</label>
+                <input type="text" id="player2" class="form-control" placeholder="Enter name">
+            </div>
+            <button id="startQuiz" class="btn btn-primary">Start Quiz</button>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" style="display: none;">
+            <div class="progress mb-3">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="player-section">
+                        <h3 id="player1Name">Player 1</h3>
+                        <p>Score: <span id="player1Score">0</span></p>
+                        <div id="player1Options"></div>
+                        <button id="player1Submit" class="btn btn-secondary mt-2">Submit</button>
+                    </div>
+                </div>
+                <div class="col-md-6" id="player2Section" style="display: none;">
+                    <div class="player-section">
+                        <h3 id="player2Name">Player 2</h3>
+                        <p>Score: <span id="player2Score">0</span></p>
+                        <div id="player2Options"></div>
+                        <button id="player2Submit" class="btn btn-secondary mt-2">Submit</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <h4 id="question">Question</h4>
+                <div id="reveal" style="display: none;">
+                    <p id="correctAnswer"></p>
+                    <p id="feedback"></p>
+                    <button id="nextQuestion" class="btn btn-primary">Next Question</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" style="display: none;" class="text-center">
+            <h2>Quiz Complete!</h2>
+            <p id="finalScores"></p>
+            <button id="restart" class="btn btn-primary">Restart</button>
+            <a href="index.html" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+            const questions = [
+                /*
+                { question: "What is 5 × 5 - 10 + (3 + 2)?", options: ["15", "20", "25", "30"], correct: "20" },
+                { question: "A train travels at 80km/h. How long does it take to travel 320km?", options: ["3 hours", "4 hours", "5 hours", "6 hours"], correct: "4 hours" },
+                { question: "What is 15% of 200?", options: ["20", "25", "30", "35"], correct: "30" },
+                { question: "If a shirt costs $20 and is 25% off, what is the new price?", options: ["$12", "$15", "$16", "$18"], correct: "$15" },
+                { question: "What is the square root of 144?", options: ["10", "11", "12", "14"], correct: "12" },
+                { question: "Solve for x: 2x + 10 = 30", options: ["5", "10", "15", "20"], correct: "10" },
+                { question: "How many degrees are in a right angle?", options: ["45", "90", "180", "360"], correct: "90" },
+                { question: "What is 120 divided by 4?", options: ["25", "30", "35", "40"], correct: "30" },
+                { question: "A rectangle has a length of 8 and a width of 5. What is its area?", options: ["13", "30", "40", "45"], correct: "40" },
+                { question: "What is the next prime number after 7?", options: ["8", "9", "10", "11"], correct: "11" },
+                { question: "What is 7 + (3 × 4)?", options: ["19", "21", "40", "31"], correct: "19" },
+                { question: "How many minutes are in 2.5 hours?", options: ["120", "130", "150", "160"], correct: "150" },
+                { question: "If you flip a coin, what is the probability it lands on heads?", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
+                
+    */
+                { question: "What is 10 squared minus 5 squared?", options: ["25", "50", "75", "100"], correct: "75" },
+                { question: "A triangle has sides of 3, 4, and what for a right angle?", options: ["5", "6", "7", "8"], correct: "5" },
+                { question: "What is 1/2 + 1/4?", options: ["1/6", "2/4", "3/4", "1"], correct: "3/4" },
+                { question: "If 3 apples cost $1.50, how much is 1 apple?", options: ["$0.40", "$0.50", "$0.60", "$0.75"], correct: "$0.50" },
+                { question: "What is 99 + 99 + 2?", options: ["198", "199", "200", "201"], correct: "200" },
+                { question: "How many sides does a hexagon have?", options: ["5", "6", "7", "8"], correct: "6" },
+                { question: "What is 1000 minus 350?", options: ["650", "750", "550", "450"], correct: "650" },
+                { question: "Solve for y: 5y = 45", options: ["7", "8", "9", "10"], correct: "9" },
+                { question: "What is the sum of angles in a triangle?", options: ["90", "180", "270", "360"], correct: "180" },
+                { question: "What is 0.5 multiplied by 100?", options: ["5", "50", "500", "0.05"], correct: "50" },
+                { question: "A car travels 60 miles in 1 hour. How far in 15 minutes?", options: ["10 miles", "15 miles", "20 miles", "30 miles"], correct: "15 miles" },
+                { question: "What is 2 to the power of 4 (2^4)?", options: ["8", "12", "16", "32"], correct: "16" },
+                { question: "How many seconds are in 5 minutes?", options: ["200", "250", "300", "350"], correct: "300" },
+                { question: "What is 11 × 11?", options: ["111", "121", "131", "141"], correct: "121" },
+                { question: "If a dozen eggs cost $2.40, how much is one egg?", options: ["$0.10", "$0.20", "$0.25", "$0.30"], correct: "$0.20" },
+                { question: "What is 1/3 of 90?", options: ["20", "30", "40", "45"], correct: "30" },
+                { question: "What is 50 + 50 × 0?", options: ["0", "50", "100", "2500"], correct: "50" }
+            ];
+
+        let currentQuestion = 0;
+        let player1Score = 0;
+        let player2Score = 0;
+        let player1Answer = null;
+        let player2Answer = null;
+        let selectedOption1 = null;
+        let selectedOption2 = null;
+        let isMultiplayer = false;
+
+        document.getElementById('startQuiz').addEventListener('click', () => {
+            const p1 = document.getElementById('player1').value.trim();
+            const p2 = document.getElementById('player2').value.trim();
+            if (!p1) {
+                alert('Player 1 name is required.');
+                return;
+            }
+            document.getElementById('player1Name').textContent = p1;
+            if (p2) {
+                isMultiplayer = true;
+                document.getElementById('player2Name').textContent = p2;
+                document.getElementById('player2Section').style.display = 'block';
+            }
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = q.question;
+            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            document.getElementById('reveal').style.display = 'none';
+            player1Answer = null;
+            player2Answer = null;
+            selectedOption1 = null;
+            selectedOption2 = null;
+            loadOptions('player1Options', 'player1Submit');
+            if (isMultiplayer) {
+                loadOptions('player2Options', 'player2Submit');
+            }
+        }
+
+        function loadOptions(containerId, submitId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            questions[currentQuestion].options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-outline-primary m-1';
+                btn.textContent = option;
+                btn.addEventListener('click', () => {
+                    console.log('Clicked option: ' + option);
+                    // Remove selected from others
+                    container.querySelectorAll('.btn').forEach(b => {
+                        b.classList.remove('btn-primary');
+                        b.classList.add('btn-outline-primary');
+                    });
+                    // Add selected to this
+                    btn.classList.remove('btn-outline-primary');
+                    btn.classList.add('btn-primary');
+                    if (containerId === 'player1Options') selectedOption1 = option;
+                    else selectedOption2 = option;
+                });
+                container.appendChild(btn);
+            });
+            document.getElementById(submitId).disabled = false;
+        }
+
+        document.getElementById('player1Submit').addEventListener('click', () => {
+            if (!selectedOption1) return;
+            player1Answer = selectedOption1;
+            document.getElementById('player1Submit').disabled = true;
+            checkSubmissions();
+        });
+
+        document.getElementById('player2Submit').addEventListener('click', () => {
+            if (!selectedOption2) return;
+            player2Answer = selectedOption2;
+            document.getElementById('player2Submit').disabled = true;
+            checkSubmissions();
+        });
+
+        function checkSubmissions() {
+            if (!isMultiplayer || (player1Answer && player2Answer)) {
+                revealAnswer();
+            }
+        }
+
+        function revealAnswer() {
+            const q = questions[currentQuestion];
+            document.getElementById('correctAnswer').textContent = `Correct Answer: ${q.correct}`;
+            let feedback = '';
+            if (player1Answer === q.correct) {
+                player1Score++;
+                feedback += 'Player 1: Correct! ';
+            } else {
+                feedback += 'Player 1: Incorrect. ';
+            }
+            document.getElementById('player1Score').textContent = player1Score;
+            if (isMultiplayer) {
+                if (player2Answer === q.correct) {
+                    player2Score++;
+                    feedback += 'Player 2: Correct!';
+                } else {
+                    feedback += 'Player 2: Incorrect.';
+                }
+                document.getElementById('player2Score').textContent = player2Score;
+            }
+            document.getElementById('feedback').textContent = feedback;
+            document.getElementById('reveal').style.display = 'block';
+        }
+
+        document.getElementById('nextQuestion').addEventListener('click', () => {
+            currentQuestion++;
+            loadQuestion();
+        });
+
+        function showResults() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            let scores = `Player 1 (${document.getElementById('player1Name').textContent}): ${player1Score}`;
+            if (isMultiplayer) {
+                scores += ` | Player 2 (${document.getElementById('player2Name').textContent}): ${player2Score}`;
+            }
+            document.getElementById('finalScores').textContent = scores;
+        }
+
+        document.getElementById('restart').addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
