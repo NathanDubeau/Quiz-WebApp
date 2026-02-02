@@ -6,28 +6,157 @@
     <title>Nate's super hard quiz project</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Hover background images for quiz cards */
+        .quiz-grid .card.quiz-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 180px;
+            transition: transform .25s ease, box-shadow .25s ease;
+            color: #fff;
+            background-color: #7b97d4;
+            border: 1px solid #fff;
+        }
+        .quiz-grid .card.quiz-card .card-body { position: relative; z-index: 2; }
+        .quiz-grid .card.quiz-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity .25s ease, transform .35s ease;
+            z-index: 0;
+            transform: scale(1);
+        }
+        .quiz-grid .card.quiz-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            opacity: 0;
+            transition: opacity .25s ease;
+            z-index: 1;
+        }
+        .quiz-grid .card.quiz-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .quiz-grid .card.quiz-card:hover::after { opacity: 1; transform: scale(1.03); }
+        .quiz-grid .card.quiz-card:hover::before { opacity: 1; }
+
+        /* Per-topic images (Unsplash) */
+        .quiz-card.science::after { background-image: url('https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .quiz-card.math::after { background-image: url('https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .quiz-card.history::after { background-image: url('https://images.unsplash.com/photo-1582034438152-77bc94ffa6ae?q=80&w=1146&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); }
+        .quiz-card.geography::after { background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80'); }
+        .quiz-card.literature::after { background-image: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1200&q=80'); }
+        .quiz-card.general::after { background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'); }
+
+        /* Ensure text remains readable */
+        .quiz-card .card-title, .quiz-card .card-text { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+
+        /* Page background image and overlay (full-page) */
+        html, body { height: 100%; }
+        body {
+            background-image: url("https://images.unsplash.com/photo-1722966152357-97daf7e62a39?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* Dark overlay over the entire page background */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* Ensure page sections sit above the overlay */
+        header, main, footer, .container, .row, .quiz-grid { position: relative; z-index: 1; }
+
+        /* Keep hero section transparent so the page background shows through */
+        .main-hero { background: transparent; border-radius: 8px; padding-top: 2rem; padding-bottom: 2rem; }
+        .main-hero h2, .main-hero p { color: #f8f9fa; }
+
+        /* Header styles: gradient, logo, CTA, shadow, and decorative wave */
+        header.site-header {
+            background: linear-gradient(135deg, #03335a 0%, #070344 60%);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        header.site-header .logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 36px;
+        }
+        header.site-header .logo img, .logo-img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            filter: invert(1) brightness(1.3);
+            display: block;
+        }
+        header.site-header h1 { font-size: 1.25rem; margin: 0; font-weight: 700; }
+        header.site-header small { color: rgba(255,255,255,0.95); }
+        header.site-header .btn-light { background: rgba(255,255,255,0.95); color: #111; }
+        header.site-header .btn-outline-light { border-color: rgba(255,255,255,0.3); }
+
+        /* Decorative SVG wave spacing */
+        .header-wave { display: block; width: 100%; height: 40px; margin-top: 8px; }
+
+        /* #18d26e  algonquin green */
+    </style>
 </head>
 
 
 <body>
 
     <!-- the start of the quiz page-->
-    <header class="bg-primary text-white text-center py-5">
-        <div class="container">
-            <h1>Welcome to Nate's Super Hard Quizzes</h1>
-            <p class="lead">You will likely</p>
+    <header class="site-header text-white py-4">
+        <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <div class="d-flex align-items-center mb-3 mb-md-0">
+                <div class="logo" aria-hidden="true">
+                    <img src="https://www.svgrepo.com/show/530188/bear.svg" alt="Logo" class="logo-img" width="28" height="28">
+                </div>
+                <div>
+                    <h1 class="h3 mb-0">Nate's Super Hard Quizzes</h1>
+                    <small class="d-block">Challenge yourself</small>
+                </div>
+            </div>
+            <div>
+                <!-- <a href="#choose" class="btn btn-light btn-sm">Choose a Quiz</a> -->
+                <a href="math-quiz.html" class="btn btn-outline-light btn-sm ms-2">Try Math</a>
+            </div>
         </div>
+        <!-- decorative wave -->
+        <svg class="header-wave" viewBox="0 0 1440 48" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 32C120 8 360 0 720 24C1080 48 1320 40 1440 16V48H0V32Z" fill="rgba(255,255,255,0.12)"></path>
+        </svg>
     </header>
 
     <!-- option to pick a quiz under here maybe make them modals-->
-    <main class="container my-5">
+    <main class="container my-5 main-hero">
         <section>
-            <h2 class="text-center mb-4">Choose a Quiz Topic</h2>
-            <div class="row">
+            <h2 class="text-center mb-2">Choose a Quiz Topic</h2>
+            <p class="text-center mb-4 text-light">Pick a topic below and hover a card to preview its theme.</p>
+            <div class="row quiz-grid">
 
                 <!-- math quiz gonna keep it like highschool level probably-->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card quiz-card math">
                         <div class="card-body">
                             <h5 class="card-title">Mathematics</h5>
                             <p class="card-text">Challenge yourself with math problems from algebra to calculus.</p>
@@ -38,44 +167,44 @@
 
                 <!-- basic science stuff-->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card quiz-card science">
                         <div class="card-body">
                             <h5 class="card-title">Science</h5>
                             <p class="card-text">Explore the wonders of physics, chemistry, and biology.</p>
-                            <a href="#" class="btn btn-primary">Start Science Quiz</a>
+                            <a href="science-quiz.html" class="btn btn-primary">Start Science Quiz</a>
                         </div>
                     </div>
                 </div>
 
                 <!-- history of the world (might do sports like worldcup)-->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card quiz-card history">
                         <div class="card-body">
                             <h5 class="card-title">History</h5>
                             <p class="card-text">Dive into the past with questions on world history.</p>
-                            <a href="#" class="btn btn-primary">Start History Quiz</a>
+                            <a href="history-quiz.html" class="btn btn-primary">Start History Quiz</a>
                         </div>
                     </div>
                 </div>
 
                 <!-- This can be a geo quiz like countries, flags or captials-->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card quiz-card geography">
                         <div class="card-body">
                             <h5 class="card-title">Geography</h5>
                             <p class="card-text">Test your knowledge of countries, capitals, and landmarks.</p>
-                            <a href="#" class="btn btn-primary">Start Geography Quiz</a>
+                            <a href="geography-quiz.html" class="btn btn-primary">Start Geography Quiz</a>
                         </div>
                     </div>
                 </div>
 
                 <!-- Literature questions like books or authrs -->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card quiz-card literature">
                         <div class="card-body">
                             <h5 class="card-title">Literature</h5>
                             <p class="card-text">Questions on classic books, authors, and literary terms.</p>
-                            <a href="#" class="btn btn-primary">Start Literature Quiz</a>
+                            <a href="literature-quiz.html" class="btn btn-primary">Start Literature Quiz</a>
                         </div>
                     </div>
                 </div>
@@ -83,11 +212,11 @@
 
                 <!-- Gen knowlg quiz-->
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card quiz-card general">
                         <div class="card-body">
                             <h5 class="card-title">General Knowledge</h5>
                             <p class="card-text">A mix of trivia and fun facts from various topics.</p>
-                            <a href="#" class="btn btn-primary">Start General Quiz</a>
+                            <a href="general-quiz.html" class="btn btn-primary">Start General Quiz</a>
                         </div>
                     </div>
                 </div>
@@ -102,6 +231,6 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.m   in.js"></script>
 </body>
 </html>

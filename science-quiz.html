@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathematics Quiz</title>
+    <title>Science Quiz</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
 </head>
 <body>
     <header class="bg-primary text-white text-center py-3">
-        <h1>Mathematics Quiz</h1>
+        <h1>Science Quiz</h1>
     </header>
 
     <div class="container my-4">
@@ -95,25 +95,30 @@
                 { question: "If you flip a coin, what is the probability it lands on heads?", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
                 
     */
-                { question: "What is 10 squared minus 5 squared?", options: ["25", "50", "75", "100"], correct: "75" },
-                { question: "A triangle has sides of 3, 4, and what for a right angle?", options: ["5", "6", "7", "8"], correct: "5" },
-                { question: "What is 1/2 + 1/4?", options: ["1/6", "2/4", "3/4", "1"], correct: "3/4" },
-                { question: "If 3 apples cost $1.50, how much is 1 apple?", options: ["$0.40", "$0.50", "$0.60", "$0.75"], correct: "$0.50" },
-                { question: "What is 99 + 99 + 2?", options: ["198", "199", "200", "201"], correct: "200" },
-                { question: "How many sides does a hexagon have?", options: ["5", "6", "7", "8"], correct: "6" },
-                { question: "What is 1000 minus 350?", options: ["650", "750", "550", "450"], correct: "650" },
-                { question: "Solve for y: 5y = 45", options: ["7", "8", "9", "10"], correct: "9" },
-                { question: "What is the sum of angles in a triangle?", options: ["90", "180", "270", "360"], correct: "180" },
-                { question: "What is 0.5 multiplied by 100?", options: ["5", "50", "500", "0.05"], correct: "50" },
-                { question: "A car travels 60 miles in 1 hour. How far in 15 minutes?", options: ["10 miles", "15 miles", "20 miles", "30 miles"], correct: "15 miles" },
-                { question: "What is 2 to the power of 4 (2^4)?", options: ["8", "12", "16", "32"], correct: "16" },
-                { question: "How many seconds are in 5 minutes?", options: ["200", "250", "300", "350"], correct: "300" },
-                { question: "What is 11 × 11?", options: ["111", "121", "131", "141"], correct: "121" },
-                { question: "If a dozen eggs cost $2.40, how much is one egg?", options: ["$0.10", "$0.20", "$0.25", "$0.30"], correct: "$0.20" },
-                { question: "What is 1/3 of 90?", options: ["20", "30", "40", "45"], correct: "30" },
-                { question: "What is 50 + 50 × 0?", options: ["0", "50", "100", "2500"], correct: "50" }
+            
+                { question: "What gas do plants absorb from the air during photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: "Carbon Dioxide" },
+                { question: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Jupiter", "Venus"], correct: "Mars" },
+                { question: "What force pulls objects toward the Earth?", options: ["Magnetism", "Gravity", "Friction", "Electricity"], correct: "Gravity" },
+                { question: "What part of the plant carries water from the roots to the leaves?", options: ["Leaf", "Stem", "Flower", "Seed"], correct: "Stem" },
+                { question: "What state of matter has a fixed shape and volume?", options: ["Solid", "Liquid", "Gas", "Plasma"], correct: "Solid" },
+                { question: "How many planets are in our solar system?", options: ["7", "8", "9", "10"], correct: "8" },
+                { question: "Which organ pumps blood through the body?", options: ["Lungs", "Brain", "Heart", "Liver"], correct: "Heart" },
+                { question: "What gas do humans need to breathe to survive?", options: ["Carbon Dioxide", "Hydrogen", "Oxygen", "Helium"], correct: "Oxygen" },
+                { question: "Which material is attracted to a magnet?", options: ["Plastic", "Wood", "Iron", "Glass"], correct: "Iron" },
+                { question: "What type of energy comes from the Sun?", options: ["Chemical", "Nuclear", "Solar", "Mechanical"], correct: "Solar" },
+                { question: "What part of the body helps you breathe?", options: ["Heart", "Stomach", "Lungs", "Kidneys"], correct: "Lungs" },
+                { question: "Which phase of matter can flow and take the shape of its container?", options: ["Solid", "Liquid", "Ice", "Metal"], correct: "Liquid" },
+                { question: "What causes day and night on Earth?", options: ["Earth’s orbit", "Earth’s rotation", "The Moon", "The Sun moving"], correct: "Earth’s rotation" },
+                { question: "Which sense organ is used for hearing?", options: ["Eye", "Nose", "Ear", "Skin"], correct: "Ear" },
+                { question: "What do we call animals that eat only plants?", options: ["Carnivores", "Herbivores", "Omnivores", "Predators"], correct: "Herbivores" },
+                { question: "What is water made of?", options: ["Oxygen only", "Hydrogen only", "Hydrogen and Oxygen", "Carbon and Oxygen"], correct: "Hydrogen and Oxygen" },
+                { question: "Which layer of the Earth is the outermost?", options: ["Core", "Mantle", "Crust", "Inner core"], correct: "Crust" }
             ];
 
+
+
+
+    
         // Shuffle function to randomize question order each run
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
