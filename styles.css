@@ -1,0 +1,392 @@
+/* ------------------------------
+   GLOBAL & PAGE LAYOUT STYLES
+   ---------------------------- */
+/* a lof the css is reused among the differernt quizzes so be careful changing stuff*/
+
+
+html, body {
+    height: 100%;
+}
+
+/* Background image for index.html which is the home and landingpage */
+body {
+    background-image: url("https://images.unsplash.com/photo-1722966152357-97daf7e62a39?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Dark overlay over the entire page background which kind of helps to swap where people will focus*/
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(161, 104, 58, 0.4); /* 40%  transparency seems to be the sweet spot */
+    z-index: 0; /* The Z-index just helps to make sure it doesnt cover any of the content and stuffs it in the bg*/
+    pointer-events: none;
+}
+
+/* Ensure page sections sit above the overlay because the Z-index in the overlay can sometimes bug out */
+header, main, footer, .container, .row, .quiz-grid {
+    position: relative;
+    z-index: 1;
+}
+
+/* ------------------------------------------------
+   Header Styles For All Pages (Index plus quizzes)
+   ----------------------------------------------- */
+
+header.site-header {
+    background: linear-gradient(135deg, #6C9A8B 0%, #A1683A 60%); /* Gives a cool design effect might swap later*/
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    position: relative;
+    z-index: 1; 
+}
+
+
+/* Logo Styling*/
+header.site-header .logo { /* Controls the bear logo frame (small circle behind him) */
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    margin-right: 36px;
+}
+
+header.site-header .logo img, .logo-img { /* Control Bear Logo size*/
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    display: block;
+}
+
+header.site-header h1 {
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+header.site-header small {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+header.site-header .btn-light {
+    background: rgba(255, 255, 255, 0.95);
+    color: #111;
+}
+
+header.site-header .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Fancy little SVG wave spacing trick*/
+.header-wave {
+    display: block;
+    width: 100%;
+    height: 40px;
+    margin-top: 8px;
+}
+
+
+/* ------------------
+   MAIN CONTENT STYLES
+   ------------------ */
+
+/* Keep hero section transparent so the page background shows through */
+.main-hero {
+    background: transparent; /* Allows the edges and gaps to show our bg image*/
+    border-radius: 8px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.main-hero h2 {
+    color: #fff;
+}
+
+.main-hero p {
+    color: #A1683A;
+}
+
+/* ------------------
+   QUIZ CARD STYLES
+   ------------------ */
+
+/*On hover background images for quiz cards fade in & out quickly when users hover or move mouse off*/
+.quiz-grid .card.quiz-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    transition: transform .25s ease, box-shadow .25s ease;
+    color: #A1683A;
+    background-color: #FBF7F4;
+    border: 1px solid #EED2CC;
+}
+
+/* Setting the cards a layer above the bg image and the container behind them*/
+.quiz-grid .card.quiz-card .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+.quiz-grid .card.quiz-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity .25s ease, transform .35s ease;
+    z-index: 0;
+    transform: scale(1);
+}
+
+.quiz-grid .card.quiz-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transition: opacity .25s ease;
+    z-index: 1;
+}
+
+.quiz-grid .card.quiz-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.quiz-grid .card.quiz-card:hover::after {
+    opacity: 1;
+    transform: scale(1.03);
+}
+
+.quiz-grid .card.quiz-card:hover::before {
+    opacity: 1;
+}
+
+/* Background images  of each quiz card (Unsplash)*/
+.quiz-card.science::after {
+    background-image: url('https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.quiz-card.math::after {
+    background-image: url('https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.quiz-card.history::after {
+    background-image: url('https://images.unsplash.com/photo-1582034438152-77bc94ffa6ae?q=80&w=1146&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.quiz-card.geography::after {
+    background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80');
+}
+
+.quiz-card.literature::after {
+    background-image: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1200&q=80');
+}
+
+.quiz-card.general::after {
+    background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80');
+}
+
+/* Swap text color on hover for each card. Helps ensure text remains readable against the bg image*/
+.quiz-card .card-title, .quiz-card .card-text {
+    color: #A1683A;
+    text-shadow: none;
+}
+
+.quiz-grid .card.quiz-card:hover .card-title,
+.quiz-grid .card.quiz-card:hover .card-text {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/*  ----------------
+    BUTTON STYLES
+------------------*/
+
+.btn-primary {
+    background-color: #E8998D;
+    border-color: #E8998D;
+}
+
+.btn-primary:hover {
+    background-color: #d17a72;
+    border-color: #d17a72;
+}
+
+/* -----------------
+   QUIZ PAGE STYLES
+   ----------------- */
+
+/* Player sections in the quiz*/
+.player-section {
+    border: 1px solid #A1683A;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #FBF7F4;
+}
+
+#question {
+    color: #fff;
+}
+
+.correct {
+    color: #6C9A8B;
+}
+
+.incorrect {
+    color: #E8998D;
+}
+
+/* ----------------
+   ANIMATION STYLES
+   --------------- */
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+.animate-scale {
+    animation: scaleIn 0.5s ease-out;
+}
+
+.animate-bounce {
+    animation: bounce 1s ease-in-out;
+}
+
+.animate-pulse {
+    animation: pulse 1s infinite;
+}
+
+/* Start invisible the pop up real quick*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* Same as the invisibility just a zoom effect*/
+@keyframes scaleIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+/* Used to make text bounce on victory screen*/
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+/*Sort of like a pumping effect makes text shrink and grow*/
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ---------------------
+   SCORE DISPLAY STYLES
+   ------------------- */
+
+.score-display {
+    margin: 20px 0;
+}
+
+.score-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #E8998D;
+}
+
+.winner-display {
+    margin: 20px 0;
+}
+
+.winner-display h1 {
+    font-size: 4rem;
+    color: #6C9A8B;
+}
+
+.loser-display {
+    margin: 20px 0;
+    color: #A1683A;
+}
+
+.tie-display {
+    margin: 20px 0;
+}
+
+.tie-display h3 {
+    font-size: 2rem;
+    color: #E8998D;
+}
+
+/* ----------------
+   CONFETTI STYLES
+  -------------- */
+/* if it starts breaking again might just get rid of it. its been more trouble than its worth*/
+.confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #E8998D;
+    animation: fall 3s linear infinite;
+}
+
+.confetti-piece:nth-child(odd) {
+    background-color: #6C9A8B;
+}
+
+.confetti-piece:nth-child(3n) {
+    background-color: #FBF7F4;
+    border: 1px solid #A1683A;
+}
+
+/*Falling and spinning animation keyframes*/
+@keyframes fall {
+    from {
+        transform: translateY(-100vh) rotate(0deg);
+    }
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}

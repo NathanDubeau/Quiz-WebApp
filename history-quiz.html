@@ -6,14 +6,11 @@
     <title>History Quiz</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .player-section { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-        .correct { color: green; }
-        .incorrect { color: red; }
-    </style>
+    <!-- Custom Styles -->
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <header class="bg-primary text-white text-center py-3">
+    <header class="text-white text-center py-3" style="background-color: #6C9A8B;">
         <h1>History Quiz</h1>
     </header>
 
@@ -28,6 +25,20 @@
             <div class="mb-3">
                 <label for="player2" class="form-label">Player 2 Name (optional):</label>
                 <input type="text" id="player2" class="form-control" placeholder="Enter name">
+            </div>
+            <div class="mb-3">
+                <label for="timer" class="form-label">Timer per question:</label>
+                <select id="timer" class="form-control">
+                    <option value="0">No timer</option>
+                    <option value="30">30 seconds</option>
+                    <option value="60">1 minute</option>
+                </select>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="multiplayer">
+                <label class="form-check-label" for="multiplayer">
+                    Enable Multiplayer
+                </label>
             </div>
             <button id="startQuiz" class="btn btn-primary">Start Quiz</button>
             <a href="index.html" class="btn btn-secondary">Back to Home</a>
@@ -58,6 +69,7 @@
             </div>
             <div class="text-center mt-3">
                 <h4 id="question">Question</h4>
+                <div id="timerDisplay" class="mt-2" style="display: none;">Time left: <span id="timeLeft"></span> seconds</div>
                 <div id="reveal" style="display: none;">
                     <p id="correctAnswer"></p>
                     <p id="feedback"></p>
@@ -68,178 +80,52 @@
 
         <!-- Results Section -->
         <div id="results" style="display: none;" class="text-center">
-            <h2>Quiz Complete!</h2>
-            <p id="finalScores"></p>
-            <button id="restart" class="btn btn-primary">Restart</button>
-            <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            <div id="soloResult" style="display: none;">
+                <h2 class="animate-fade-in">Quiz Complete!</h2>
+                <div class="score-display animate-scale">
+                    <h3>Your Score:</h3>
+                    <div class="score-number" id="soloScore"></div>
+                </div>
+                <div class="confetti" id="soloConfetti"></div>
+            </div>
+            <div id="winnerResult" style="display: none;">
+                <h2 class="animate-fade-in">We Have a Winner!</h2>
+                <div class="winner-display animate-bounce">
+                    <h1 id="winnerName"></h1>
+                    <p>Score: <span id="winnerScore"></span></p>
+                </div>
+                <div class="loser-display animate-fade-in">
+                    <h3>Runner-Up: <span id="loserName"></span></h3>
+                    <p>Score: <span id="loserScore"></span></p>
+                </div>
+                <div class="confetti" id="winnerConfetti"></div>
+            </div>
+            <div id="tieResult" style="display: none;">
+                <h2 class="animate-fade-in">It's a Tie!</h2>
+                <div class="tie-display animate-pulse">
+                    <h3>Both players scored equally!</h3>
+                    <p id="tieScores"></p>
+                </div>
+                <div class="confetti" id="tieConfetti"></div>
+            </div>
+            <div id="leaderboardSection" class="mt-4">
+                <h3>Leaderboard</h3>
+                <ul id="leaderboardList" class="list-group"></ul>
+            </div>
+            <button id="restart" class="btn btn-primary mt-4">Play Again</button>
+            <a href="index.html" class="btn btn-secondary mt-2">Back to Home</a>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-            const questions = [
-                { question: "Who was the first President of the United States?", options: ["George Washington", "John Adams", "Thomas Jefferson", "Abraham Lincoln"], correct: "George Washington" },
-                { question: "In which year did World War II end?", options: ["1942", "1945", "1948", "1950"], correct: "1945" },
-                { question: "Which civilization built the pyramids at Giza?", options: ["Romans", "Greeks", "Egyptians", "Mesopotamians"], correct: "Egyptians" },
-                { question: "The fall of the Berlin Wall occurred in which year?", options: ["1979", "1989", "1999", "2009"], correct: "1989" },
-                { question: "Who sailed across the Atlantic in 1492?", options: ["Ferdinand Magellan", "Christopher Columbus", "Vasco da Gama", "Amerigo Vespucci"], correct: "Christopher Columbus" },
-                { question: "The Roman Empire was centered in which city?", options: ["Athens", "Rome", "Carthage", "Alexandria"], correct: "Rome" },
-                { question: "The Magna Carta was signed in which country?", options: ["France", "England", "Spain", "Italy"], correct: "England" },
-                { question: "Who was the queen of England during the Spanish Armada?", options: ["Mary I", "Elizabeth I", "Victoria", "Anne"], correct: "Elizabeth I" },
-                { question: "The Cold War primarily involved the USA and which other country?", options: ["Germany", "Soviet Union", "China", "France"], correct: "Soviet Union" },
-                { question: "The French Revolution began in which year?", options: ["1776", "1789", "1804", "1815"], correct: "1789" },
-                { question: "The ancient city of Troy is associated with which war?", options: ["Persian War", "Trojan War", "Peloponnesian War", "Hundred Years' War"], correct: "Trojan War" },
-                { question: "The Industrial Revolution began in which country?", options: ["United States", "Germany", "England", "Italy"], correct: "England" },
-                { question: "The Ottoman Empire was based around which modern country?", options: ["Greece", "Turkey", "Egypt", "Syria"], correct: "Turkey" },
-                { question: "The Battle of Hastings occurred in which year?", options: ["1016", "1066", "1215", "1415"], correct: "1066" },
-                { question: "Which civil rights leader delivered 'I Have a Dream'?", options: ["Rosa Parks", "Malcolm X", "Martin Luther King Jr.", "Frederick Douglass"], correct: "Martin Luther King Jr." },
-                { question: "The Renaissance began in which country?", options: ["France", "Italy", "Spain", "Germany"], correct: "Italy" },
-                { question: "Which explorer's voyage is credited with the first circumnavigation of the globe (expedition)?", options: ["Hernán Cortés", "Ferdinand Magellan", "James Cook", "Marco Polo"], correct: "Ferdinand Magellan" }
-            ];
-
-        // Shuffle function to randomize question order each run
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-        }
-
-        let currentQuestion = 0;
-        let player1Score = 0;
-        let player2Score = 0;
-        let player1Answer = null;
-        let player2Answer = null;
-        let selectedOption1 = null;
-        let selectedOption2 = null;
-        let isMultiplayer = false;
-
-        document.getElementById('startQuiz').addEventListener('click', () => {
-            const p1 = document.getElementById('player1').value.trim();
-            const p2 = document.getElementById('player2').value.trim();
-            if (!p1) {
-                alert('Player 1 name is required.');
-                return;
-            }
-            document.getElementById('player1Name').textContent = p1;
-            if (p2) {
-                isMultiplayer = true;
-                document.getElementById('player2Name').textContent = p2;
-                document.getElementById('player2Section').style.display = 'block';
-            }
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('quiz').style.display = 'block';
-            // Randomize questions for this run
-            shuffleArray(questions);
-            loadQuestion();
-        });
-
-        function loadQuestion() {
-            if (currentQuestion >= questions.length) {
-                showResults();
-                return;
-            }
-            const q = questions[currentQuestion];
-            document.getElementById('question').textContent = q.question;
-            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
-            document.getElementById('reveal').style.display = 'none';
-            player1Answer = null;
-            player2Answer = null;
-            selectedOption1 = null;
-            selectedOption2 = null;
-            loadOptions('player1Options', 'player1Submit');
-            if (isMultiplayer) {
-                loadOptions('player2Options', 'player2Submit');
-            }
-        }
-
-        function loadOptions(containerId, submitId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            questions[currentQuestion].options.forEach(option => {
-                const btn = document.createElement('button');
-                btn.className = 'btn btn-outline-primary m-1';
-                btn.textContent = option;
-                btn.addEventListener('click', () => {
-                    // Remove selected from others
-                    container.querySelectorAll('.btn').forEach(b => {
-                        b.classList.remove('btn-primary');
-                        b.classList.add('btn-outline-primary');
-                    });
-                    // Add selected to this
-                    btn.classList.remove('btn-outline-primary');
-                    btn.classList.add('btn-primary');
-                    if (containerId === 'player1Options') selectedOption1 = option;
-                    else selectedOption2 = option;
-                });
-                container.appendChild(btn);
-            });
-            document.getElementById(submitId).disabled = false;
-        }
-
-        document.getElementById('player1Submit').addEventListener('click', () => {
-            if (!selectedOption1) return;
-            player1Answer = selectedOption1;
-            document.getElementById('player1Submit').disabled = true;
-            checkSubmissions();
-        });
-
-        document.getElementById('player2Submit').addEventListener('click', () => {
-            if (!selectedOption2) return;
-            player2Answer = selectedOption2;
-            document.getElementById('player2Submit').disabled = true;
-            checkSubmissions();
-        });
-
-        function checkSubmissions() {
-            if (!isMultiplayer || (player1Answer && player2Answer)) {
-                revealAnswer();
-            }
-        }
-
-        function revealAnswer() {
-            const q = questions[currentQuestion];
-            document.getElementById('correctAnswer').textContent = `Correct Answer: ${q.correct}`;
-            let feedback = '';
-            if (player1Answer === q.correct) {
-                player1Score++;
-                feedback += 'Player 1: Correct! ';
-            } else {
-                feedback += 'Player 1: Incorrect. ';
-            }
-            document.getElementById('player1Score').textContent = player1Score;
-            if (isMultiplayer) {
-                if (player2Answer === q.correct) {
-                    player2Score++;
-                    feedback += 'Player 2: Correct!';
-                } else {
-                    feedback += 'Player 2: Incorrect.';
-                }
-                document.getElementById('player2Score').textContent = player2Score;
-            }
-            document.getElementById('feedback').textContent = feedback;
-            document.getElementById('reveal').style.display = 'block';
-        }
-
-        document.getElementById('nextQuestion').addEventListener('click', () => {
-            currentQuestion++;
-            loadQuestion();
-        });
-
-        function showResults() {
-            document.getElementById('quiz').style.display = 'none';
-            document.getElementById('results').style.display = 'block';
-            let scores = `Player 1 (${document.getElementById('player1Name').textContent}): ${player1Score}`;
-            if (isMultiplayer) {
-                scores += ` | Player 2 (${document.getElementById('player2Name').textContent}): ${player2Score}`;
-            }
-            document.getElementById('finalScores').textContent = scores;
-        }
-
-        document.getElementById('restart').addEventListener('click', () => {
-            location.reload();
-        });
-    </script>
+    <!-- Question Data -->
+    <script src="questions/history_questions.js"></script>
+    <!-- Timer Utilities -->
+    <script src="timer.js"></script>
+    <!-- Core Quiz Actions -->
+    <script src="quiz_actions.js"></script>
+    <!-- UI Event Handlers -->
+    <script src="ui.js"></script>
 </body>
 </html>

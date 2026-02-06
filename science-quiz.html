@@ -6,14 +6,11 @@
     <title>Science Quiz</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .player-section { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-        .correct { color: green; }
-        .incorrect { color: red; }
-    </style>
+    <!-- Custom Styles -->
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <header class="bg-primary text-white text-center py-3">
+    <header class="text-white text-center py-3" style="background-color: #6C9A8B;">
         <h1>Science Quiz</h1>
     </header>
 
@@ -28,6 +25,20 @@
             <div class="mb-3">
                 <label for="player2" class="form-label">Player 2 Name (optional):</label>
                 <input type="text" id="player2" class="form-control" placeholder="Enter name">
+            </div>
+            <div class="mb-3">
+                <label for="timer" class="form-label">Timer per question:</label>
+                <select id="timer" class="form-control">
+                    <option value="0">No timer</option>
+                    <option value="30">30 seconds</option>
+                    <option value="60">1 minute</option>
+                </select>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="multiplayer">
+                <label class="form-check-label" for="multiplayer">
+                    Enable Multiplayer
+                </label>
             </div>
             <button id="startQuiz" class="btn btn-primary">Start Quiz</button>
             <a href="index.html" class="btn btn-secondary">Back to Home</a>
@@ -58,6 +69,7 @@
             </div>
             <div class="text-center mt-3">
                 <h4 id="question">Question</h4>
+                <div id="timerDisplay" class="mt-2" style="display: none;">Time left: <span id="timeLeft"></span> seconds</div>
                 <div id="reveal" style="display: none;">
                     <p id="correctAnswer"></p>
                     <p id="feedback"></p>
@@ -68,200 +80,52 @@
 
         <!-- Results Section -->
         <div id="results" style="display: none;" class="text-center">
-            <h2>Quiz Complete!</h2>
-            <p id="finalScores"></p>
-            <button id="restart" class="btn btn-primary">Restart</button>
-            <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            <div id="soloResult" style="display: none;">
+                <h2 class="animate-fade-in">Quiz Complete!</h2>
+                <div class="score-display animate-scale">
+                    <h3>Your Score:</h3>
+                    <div class="score-number" id="soloScore"></div>
+                </div>
+                <div class="confetti" id="soloConfetti"></div>
+            </div>
+            <div id="winnerResult" style="display: none;">
+                <h2 class="animate-fade-in">We Have a Winner!</h2>
+                <div class="winner-display animate-bounce">
+                    <h1 id="winnerName"></h1>
+                    <p>Score: <span id="winnerScore"></span></p>
+                </div>
+                <div class="loser-display animate-fade-in">
+                    <h3>Runner-Up: <span id="loserName"></span></h3>
+                    <p>Score: <span id="loserScore"></span></p>
+                </div>
+                <div class="confetti" id="winnerConfetti"></div>
+            </div>
+            <div id="tieResult" style="display: none;">
+                <h2 class="animate-fade-in">It's a Tie!</h2>
+                <div class="tie-display animate-pulse">
+                    <h3>Both players scored equally!</h3>
+                    <p id="tieScores"></p>
+                </div>
+                <div class="confetti" id="tieConfetti"></div>
+            </div>
+            <div id="leaderboardSection" class="mt-4">
+                <h3>Leaderboard</h3>
+                <ul id="leaderboardList" class="list-group"></ul>
+            </div>
+            <button id="restart" class="btn btn-primary mt-4">Play Again</button>
+            <a href="index.html" class="btn btn-secondary mt-2">Back to Home</a>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-            const questions = [
-                /*
-                { question: "What is 5 × 5 - 10 + (3 + 2)?", options: ["15", "20", "25", "30"], correct: "20" },
-                { question: "A train travels at 80km/h. How long does it take to travel 320km?", options: ["3 hours", "4 hours", "5 hours", "6 hours"], correct: "4 hours" },
-                { question: "What is 15% of 200?", options: ["20", "25", "30", "35"], correct: "30" },
-                { question: "If a shirt costs $20 and is 25% off, what is the new price?", options: ["$12", "$15", "$16", "$18"], correct: "$15" },
-                { question: "What is the square root of 144?", options: ["10", "11", "12", "14"], correct: "12" },
-                { question: "Solve for x: 2x + 10 = 30", options: ["5", "10", "15", "20"], correct: "10" },
-                { question: "How many degrees are in a right angle?", options: ["45", "90", "180", "360"], correct: "90" },
-                { question: "What is 120 divided by 4?", options: ["25", "30", "35", "40"], correct: "30" },
-                { question: "A rectangle has a length of 8 and a width of 5. What is its area?", options: ["13", "30", "40", "45"], correct: "40" },
-                { question: "What is the next prime number after 7?", options: ["8", "9", "10", "11"], correct: "11" },
-                { question: "What is 7 + (3 × 4)?", options: ["19", "21", "40", "31"], correct: "19" },
-                { question: "How many minutes are in 2.5 hours?", options: ["120", "130", "150", "160"], correct: "150" },
-                { question: "If you flip a coin, what is the probability it lands on heads?", options: ["25%", "50%", "75%", "100%"], correct: "50%" },
-                
-    */
-            
-                { question: "What gas do plants absorb from the air during photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: "Carbon Dioxide" },
-                { question: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Jupiter", "Venus"], correct: "Mars" },
-                { question: "What force pulls objects toward the Earth?", options: ["Magnetism", "Gravity", "Friction", "Electricity"], correct: "Gravity" },
-                { question: "What part of the plant carries water from the roots to the leaves?", options: ["Leaf", "Stem", "Flower", "Seed"], correct: "Stem" },
-                { question: "What state of matter has a fixed shape and volume?", options: ["Solid", "Liquid", "Gas", "Plasma"], correct: "Solid" },
-                { question: "How many planets are in our solar system?", options: ["7", "8", "9", "10"], correct: "8" },
-                { question: "Which organ pumps blood through the body?", options: ["Lungs", "Brain", "Heart", "Liver"], correct: "Heart" },
-                { question: "What gas do humans need to breathe to survive?", options: ["Carbon Dioxide", "Hydrogen", "Oxygen", "Helium"], correct: "Oxygen" },
-                { question: "Which material is attracted to a magnet?", options: ["Plastic", "Wood", "Iron", "Glass"], correct: "Iron" },
-                { question: "What type of energy comes from the Sun?", options: ["Chemical", "Nuclear", "Solar", "Mechanical"], correct: "Solar" },
-                { question: "What part of the body helps you breathe?", options: ["Heart", "Stomach", "Lungs", "Kidneys"], correct: "Lungs" },
-                { question: "Which phase of matter can flow and take the shape of its container?", options: ["Solid", "Liquid", "Ice", "Metal"], correct: "Liquid" },
-                { question: "What causes day and night on Earth?", options: ["Earth’s orbit", "Earth’s rotation", "The Moon", "The Sun moving"], correct: "Earth’s rotation" },
-                { question: "Which sense organ is used for hearing?", options: ["Eye", "Nose", "Ear", "Skin"], correct: "Ear" },
-                { question: "What do we call animals that eat only plants?", options: ["Carnivores", "Herbivores", "Omnivores", "Predators"], correct: "Herbivores" },
-                { question: "What is water made of?", options: ["Oxygen only", "Hydrogen only", "Hydrogen and Oxygen", "Carbon and Oxygen"], correct: "Hydrogen and Oxygen" },
-                { question: "Which layer of the Earth is the outermost?", options: ["Core", "Mantle", "Crust", "Inner core"], correct: "Crust" }
-            ];
-
-
-
-
-    
-        // Shuffle function to randomize question order each run
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-        }
-
-        let currentQuestion = 0;
-        let player1Score = 0;
-        let player2Score = 0;
-        let player1Answer = null;
-        let player2Answer = null;
-        let selectedOption1 = null;
-        let selectedOption2 = null;
-        let isMultiplayer = false;
-
-        document.getElementById('startQuiz').addEventListener('click', () => {
-            const p1 = document.getElementById('player1').value.trim();
-            const p2 = document.getElementById('player2').value.trim();
-            if (!p1) {
-                alert('Player 1 name is required.');
-                return;
-            }
-            document.getElementById('player1Name').textContent = p1;
-            if (p2) {
-                isMultiplayer = true;
-                document.getElementById('player2Name').textContent = p2;
-                document.getElementById('player2Section').style.display = 'block';
-            }
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('quiz').style.display = 'block';
-            // Randomize questions for this run
-            shuffleArray(questions);
-            loadQuestion();
-        });
-
-        function loadQuestion() {
-            if (currentQuestion >= questions.length) {
-                showResults();
-                return;
-            }
-            const q = questions[currentQuestion];
-            document.getElementById('question').textContent = q.question;
-            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
-            document.getElementById('reveal').style.display = 'none';
-            player1Answer = null;
-            player2Answer = null;
-            selectedOption1 = null;
-            selectedOption2 = null;
-            loadOptions('player1Options', 'player1Submit');
-            if (isMultiplayer) {
-                loadOptions('player2Options', 'player2Submit');
-            }
-        }
-
-        function loadOptions(containerId, submitId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            questions[currentQuestion].options.forEach(option => {
-                const btn = document.createElement('button');
-                btn.className = 'btn btn-outline-primary m-1';
-                btn.textContent = option;
-                btn.addEventListener('click', () => {
-                    console.log('Clicked option: ' + option);
-                    // Remove selected from others
-                    container.querySelectorAll('.btn').forEach(b => {
-                        b.classList.remove('btn-primary');
-                        b.classList.add('btn-outline-primary');
-                    });
-                    // Add selected to this
-                    btn.classList.remove('btn-outline-primary');
-                    btn.classList.add('btn-primary');
-                    if (containerId === 'player1Options') selectedOption1 = option;
-                    else selectedOption2 = option;
-                });
-                container.appendChild(btn);
-            });
-            document.getElementById(submitId).disabled = false;
-        }
-
-        document.getElementById('player1Submit').addEventListener('click', () => {
-            if (!selectedOption1) return;
-            player1Answer = selectedOption1;
-            document.getElementById('player1Submit').disabled = true;
-            checkSubmissions();
-        });
-
-        document.getElementById('player2Submit').addEventListener('click', () => {
-            if (!selectedOption2) return;
-            player2Answer = selectedOption2;
-            document.getElementById('player2Submit').disabled = true;
-            checkSubmissions();
-        });
-
-        function checkSubmissions() {
-            if (!isMultiplayer || (player1Answer && player2Answer)) {
-                revealAnswer();
-            }
-        }
-
-        function revealAnswer() {
-            const q = questions[currentQuestion];
-            document.getElementById('correctAnswer').textContent = `Correct Answer: ${q.correct}`;
-            let feedback = '';
-            if (player1Answer === q.correct) {
-                player1Score++;
-                feedback += 'Player 1: Correct! ';
-            } else {
-                feedback += 'Player 1: Incorrect. ';
-            }
-            document.getElementById('player1Score').textContent = player1Score;
-            if (isMultiplayer) {
-                if (player2Answer === q.correct) {
-                    player2Score++;
-                    feedback += 'Player 2: Correct!';
-                } else {
-                    feedback += 'Player 2: Incorrect.';
-                }
-                document.getElementById('player2Score').textContent = player2Score;
-            }
-            document.getElementById('feedback').textContent = feedback;
-            document.getElementById('reveal').style.display = 'block';
-        }
-
-        document.getElementById('nextQuestion').addEventListener('click', () => {
-            currentQuestion++;
-            loadQuestion();
-        });
-
-        function showResults() {
-            document.getElementById('quiz').style.display = 'none';
-            document.getElementById('results').style.display = 'block';
-            let scores = `Player 1 (${document.getElementById('player1Name').textContent}): ${player1Score}`;
-            if (isMultiplayer) {
-                scores += ` | Player 2 (${document.getElementById('player2Name').textContent}): ${player2Score}`;
-            }
-            document.getElementById('finalScores').textContent = scores;
-        }
-
-        document.getElementById('restart').addEventListener('click', () => {
-            location.reload();
-        });
-    </script>
+    <!-- Question Data -->
+    <script src="questions/science_questions.js"></script>
+    <!-- Timer Utilities -->
+    <script src="timer.js"></script>
+    <!-- Core Quiz Actions -->
+    <script src="quiz_actions.js"></script>
+    <!-- UI Event Handlers -->
+    <script src="ui.js"></script>
 </body>
 </html>
