@@ -1,3 +1,21 @@
+    <!-- Multiplayer Lobby Modal -->
+    <div class="modal fade" id="lobbyModal" tabindex="-1" aria-labelledby="lobbyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lobbyModalLabel">Multiplayer Lobby</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="lobbyPlayers" class="mb-3"></div>
+                    <div id="lobbyActions">
+                        <button class="btn btn-secondary" id="readyBtn">Ready</button>
+                        <button class="btn btn-success d-none" id="launchQuizBtn">Launch Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,12 +56,42 @@
 
     <!-- option to pick a quiz under here maybe make them modals-->
     <main class="container my-5 main-hero">
-        <section>
-
 <div class="text-center mb-4">
     <p class="text-light">Have a code and want to join a game by entering a code?</p>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinModal">Join Game</button>
 </div>
+        <section>
+
+    <div class="text-center mb-4">
+        <p class="text-light">Want to host a multiplayer game?</p>
+        <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#hostModal">Host Game</button>
+        <p class="text-light mt-3">Have a code and want to join a game by entering a code?</p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#joinModal">Join Game</button>
+    </div>
+    <!-- Host Game Modal -->
+    <div class="modal fade" id="hostModal" tabindex="-1" aria-labelledby="hostModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hostModalLabel">Host Multiplayer Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="hostForm">
+                        <div class="mb-3">
+                            <label for="hostName" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="hostName" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Create Game</button>
+                    </form>
+                    <div id="hostCodeSection" class="mt-3 d-none">
+                        <p class="fw-bold">Game Code: <span id="hostGameCode"></span></p>
+                        <button class="btn btn-outline-secondary" id="copyCodeBtn">Copy Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
             <h2 class="text-center mb-2">Choose a Quiz Topic</h2>
             <p class="text-center mb-4 text-light">Pick a topic below and hover a card to preview its theme.</p>
